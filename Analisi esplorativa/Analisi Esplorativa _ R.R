@@ -4,7 +4,7 @@ library(ggplot2)
 library(survival)
 library(survminer)
 
-clade_G <- read_csv("C:/Users/carme/OneDrive/Desktop/UNIVERSITA 2/BIOINF/clade_G.csv")
+clade_G <- read_csv("/clade_G.csv")
 clade_G$Type<-as.factor(clade_G$Type)
 clade_G$Clade<-as.factor(clade_G$Clade)
 clade_G$`Pango lineage`<-as.factor(clade_G$`Pango lineage`)
@@ -20,15 +20,14 @@ clade_G$Treatment<-as.factor(clade_G$Treatment)
 clade_G$`Specimen source`<-as.factor(clade_G$`Specimen source`)
 
 
-##ANALISI DEI MISSING VALUES 
+## ANALISI DEI MISSING VALUES 
 sum(is.na(clade_G))
 summary(clade_G)
 
 
 
-## TEST DEL CHI QUADRO RISPETTO ALLA VARIANTE
+# TEST DEL CHI QUADRO RISPETTO ALLA VARIANTE
 table(clade_G$Variant)
-
 variant_table <- table(clade_G$Variant)
 sorted_variant_table <- sort(variant_table, decreasing = TRUE)
 top_5_variants <- names(sorted_variant_table)[1:4]
@@ -36,6 +35,9 @@ filtered_clade_G <- clade_G %>% filter(Variant %in% top_5_variants)
 print(top_5_variants)
 filtered_clade_G$`Variant` <- factor(filtered_clade_G$`Variant`, levels = top_5_variants)
 
+
+
+## FUNZIONE PER IL TEST DEL CHI QUADRO
 
 vcramer <- function (x, y = NULL) 
 {
@@ -54,13 +56,12 @@ vcramer <- function (x, y = NULL)
 
 
 filtered_clade_G$Variant <- gsub("Former (VOC|VOI) ([A-Za-z]+).*", "\\2", filtered_clade_G$Variant)
-
-
-
 #Con il test del chi quadrato di Pearson, si intende controllare se l'associazione
 #fra due variabili, eventualmente evidenziata da una tabella di contingenza, sia 
 #statisticamente significativa. Si tratta di un test di verifica di ipotesi che 
-#attribuisce un valore di probabilità all'ipotesi nulla (cioè all'ipotesi di assenza di associazione).
+#attribuisce un valore di probabilitÃ  all'ipotesi nulla (cioÃ¨ all'ipotesi di assenza di associazione).
+
+
 pango_table <- table(filtered_clade_G$`Pango lineage`)
 sorted_pango_table <- sort(pango_table, decreasing = TRUE)
 top_5_pango <- names(sorted_pango_table)[1:3]
@@ -68,15 +69,10 @@ filtered_top_5_pango <- filtered_clade_G %>% filter(`Pango lineage` %in% top_5_p
 print(top_5_pango)
 print(filtered_top_5_pango)
 filtered_top_5_pango$`Pango lineage` <- factor(filtered_top_5_pango$`Pango lineage`, levels = top_5_pango)
-
-
 tab1<-table(filtered_top_5_pango$Variant, filtered_top_5_pango$`Pango lineage`)
-
 round(prop.table(tab1, margin = 2)*100, 1)
 res1 <- chisq.test(tab1)
 res1
-
-
 
 
 pango_table <- table(filtered_clade_G$`Pango version`)
@@ -86,10 +82,7 @@ filtered_top_5_pango <- filtered_clade_G %>% filter(`Pango version` %in% top_5_p
 print(top_5_pango)
 print(filtered_top_5_pango)
 filtered_top_5_pango$`Pango version` <- factor(filtered_top_5_pango$`Pango version`, levels = top_5_pango)
-
-
 tab1<-table(filtered_top_5_pango$Variant, filtered_top_5_pango$`Pango version`)
-
 round(prop.table(tab1, margin = 2)*100, 1)
 res1 <- chisq.test(tab1)
 res1
@@ -117,10 +110,7 @@ filtered_top_5_pango <- filtered_clade_G %>% filter(`Gender` %in% top_5_pango)
 print(top_5_pango)
 print(filtered_top_5_pango)
 filtered_top_5_pango$`Gender` <- factor(filtered_top_5_pango$`Gender`, levels = top_5_pango)
-
-
 tab1<-table(filtered_top_5_pango$Variant, filtered_top_5_pango$`Gender`)
-
 round(prop.table(tab1, margin = 2)*100, 1)
 res1 <- chisq.test(tab1)
 res1
@@ -149,10 +139,7 @@ filtered_top_5_pango <- filtered_clade_G %>% filter(`Patient status` %in% top_5_
 print(top_5_pango)
 print(filtered_top_5_pango)
 filtered_top_5_pango$`Patient status` <- factor(filtered_top_5_pango$`Patient status`, levels = top_5_pango)
-
-
 tab1<-table(filtered_top_5_pango$Variant, filtered_top_5_pango$`Patient status`)
-
 round(prop.table(tab1, margin = 2)*100, 1)
 res1 <- chisq.test(tab1)
 res1
@@ -212,10 +199,7 @@ filtered_top_5_pango <- filtered_clade_G %>% filter(`Specimen source` %in% top_5
 print(top_5_pango)
 print(filtered_top_5_pango)
 filtered_top_5_pango$`Specimen source` <- factor(filtered_top_5_pango$`Specimen source`, levels = top_5_pango)
-
-
 tab1<-table(filtered_top_5_pango$Variant, filtered_top_5_pango$`Specimen source`)
-
 round(prop.table(tab1, margin = 2)*100, 1)
 res1 <- chisq.test(tab1)
 res1
